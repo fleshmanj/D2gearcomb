@@ -3,13 +3,13 @@ import pprint
 import json
 
 from item import Item
-from utils import Debug as d
-from utils import print_character_stats
+from utils import Debug
+from utils import print_character_stats, merge
 
-d = d()
+d = Debug()
 # d.toggle_debug(True)
 
-classes = ["Assassin", "amazon", "barbarian", "druid", "necromancer", "paladin", "sorceress"]
+
 
 
 class Player:
@@ -77,7 +77,7 @@ class Player:
             d.debug(f"Could not add {name}")
 
         if temp is not None:
-            item = make_item(temp)
+            item = item.make_item(temp)
             d.debug(self.stats["str"])
             d.debug(item["reqstr"])
             if self.stats["str"] >= item["reqstr"]:
@@ -112,78 +112,9 @@ class Player:
                 self.stats[key].pop()
 
 
-def merge(item_dict: dict):
-    new_dict = {}
-    for k, v in item_dict.items():
-        for next_key, next_value in v.items():
-            new_dict[next_key] = next_value
-    return new_dict
 
 
-def make_item(item_dict: dict):
-    property = 0
-    item = {}
-    if "minac" in item_dict.keys():
-        ac = math.floor((item_dict["minac"] + item_dict["maxac"]) / 2)
-    for k, v in item_dict.items():
-        if "prop" in k:
-            property += 1
-            try:
-                item[item_dict[f"prop{property}"]] = math.floor(
-                    (item_dict[f"min{property}"] + item_dict[f"max{property}"]) / 2)
-            except:
-                item[item_dict[f"prop{property}"]] = item_dict[f"par{property}"]
-    if "ac" in item.keys():
-        item["ac"] = item["ac"] + ac
-
-    if "lvl req" in item_dict.keys():
-        item["lvl req"] = item_dict["lvl req"]
-    else:
-        item["levelreq"] = item_dict["levelreq"]
-    if "index" in item_dict.keys():
-        item["index"] = item_dict["index"]
-    if "name" in item_dict.keys():
-        item["name"] = item_dict["name"]
-    if "reqstr" in item_dict.keys():
-        item["reqstr"] = item_dict["reqstr"]
-    else:
-        item["reqstr"] = 0
-    return item
 
 
-if __name__ == "__main__":
-    players = []
-    for i in classes:
-        temp = Player(i)
-        players.append(temp)
 
-    players[0].add_attribute_points("strength", 100)
 
-    # print_character_stats(players[0].stats)
-    players[0].equip_item("Griffon's Eye")
-    players[0].equip_item("The Oculus")
-    players[0].equip_item("Skullder's Ire")
-    players[0].equip_item("Mara's Kaleidoscope")
-    players[0].equip_item("Lidless Wall")
-    players[0].equip_item("Magefist")
-    players[0].equip_item("Silkweave")
-    players[0].equip_item("Arachnid Mesh")
-    players[0].equip_item("The Stone of Jordan")
-    players[0].equip_item("The Stone of Jordan")
-    # print_character_stats(players[0].stats)
-
-    # players[0].equip_item("Skull Cap")
-
-    unique_name = None
-    name = None
-
-    x = players[0].slots
-    for k, v in x.items():
-        try:
-            if "index" in v.keys():
-                unique_name = v["index"]
-            if "name" in v.keys():
-                name = v["name"]
-            print(unique_name)
-        except:
-            print(f"{k} not equipped")

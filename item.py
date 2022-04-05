@@ -1,4 +1,5 @@
 import json
+import math
 
 from utils import Debug as d
 
@@ -27,7 +28,10 @@ class Item:
     def __init__(self):
         self.name = None
 
-    def find_item(self, name:str):
+    def find_item(self, name: str):
+        """
+        Builds the item from json files
+        """
         found_item = {}
         found = False
         while not found:
@@ -73,3 +77,52 @@ class Item:
             if not found:
                 d.debug(f"{name} not found")
                 break
+
+    def make_item(self, item_dict: dict):
+        property = 0
+        item = {}
+        if "minac" in item_dict.keys():
+            ac = math.floor((item_dict["minac"] + item_dict["maxac"]) / 2)
+        for k, v in item_dict.items():
+            if "prop" in k:
+                property += 1
+                try:
+                    item[item_dict[f"prop{property}"]] = math.floor(
+                        (item_dict[f"min{property}"] + item_dict[f"max{property}"]) / 2)
+                except:
+                    item[item_dict[f"prop{property}"]] = item_dict[f"par{property}"]
+        if "ac" in item.keys():
+            item["ac"] = item["ac"] + ac
+
+        if "lvl req" in item_dict.keys():
+            item["lvl req"] = item_dict["lvl req"]
+        else:
+            item["levelreq"] = item_dict["levelreq"]
+        if "index" in item_dict.keys():
+            item["index"] = item_dict["index"]
+        if "name" in item_dict.keys():
+            item["name"] = item_dict["name"]
+        if "reqstr" in item_dict.keys():
+            item["reqstr"] = item_dict["reqstr"]
+        else:
+            item["reqstr"] = 0
+        return item
+
+    def build_stat_list(self, json_file_name):
+        keyword = "prop"
+        stats = []
+        clean_stats = []
+        stats_dict = {}
+        f = open(json_file_name, 'r')
+        data = json.load(f)
+        for i in data:
+            temp = data[i]
+            for k in temp:
+                if keyword in k:
+                    stats.append(temp[k])
+        for i in range(len(stats)):
+            if stats[i] not in clean_stats:
+                clean_stats.append(stats[i])
+        for i in clean_stats:
+            stats_dict[i] = ""
+        return stats_dict

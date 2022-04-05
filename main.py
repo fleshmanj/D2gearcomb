@@ -11,13 +11,10 @@ GA (M, maxCycle):
 5. Return the best result of current generation
 """
 import random
-from utils import build_stat_list
-from utils import Debug as d
-
+from utils import Debug, classes
 from item import Item
-
-d = d()
-
+from player import Player
+d = Debug()
 
 def generate_random_genome(slots: int):
     genome = []
@@ -26,7 +23,40 @@ def generate_random_genome(slots: int):
     d.debug(genome)
     return genome
 
-
 if __name__ == "__main__":
-    pass
+    players = []
+    for i in classes:
+        temp = Player(i)
+        players.append(temp)
+
+    players[0].add_attribute_points("strength", 100)
+
+    # print_character_stats(players[0].stats)
+    players[0].equip_item("Griffon's Eye")
+    players[0].equip_item("The Oculus")
+    players[0].equip_item("Skullder's Ire")
+    players[0].equip_item("Mara's Kaleidoscope")
+    players[0].equip_item("Lidless Wall")
+    players[0].equip_item("Magefist")
+    players[0].equip_item("Silkweave")
+    players[0].equip_item("Arachnid Mesh")
+    players[0].equip_item("The Stone of Jordan")
+    players[0].equip_item("The Stone of Jordan")
+    # print_character_stats(players[0].stats)
+
+    # players[0].equip_item("Skull Cap")
+
+    unique_name = None
+    name = None
+
+    x = players[0].slots
+    for k, v in x.items():
+        try:
+            if "index" in v.keys():
+                unique_name = v["index"]
+            if "name" in v.keys():
+                name = v["name"]
+            print(unique_name)
+        except:
+            print(f"{k} not equipped")
 
