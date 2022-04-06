@@ -11,45 +11,49 @@ GA (M, maxCycle):
 5. Return the best result of current generation
 """
 import random
-from utils import Debug, classes
+import logging
+import inspect
+import os
+
+from utils import classes
 from item import Item
 from player import Player
-d = Debug()
+
+if os.path.exists("./runlog.log"):
+    os.remove('./runlog.log')
+
+FORMAT = "[{%(levelname)s} %(filename)s:%(lineno)s 	- %(funcName)20s() ] %(message)s"
+logging.basicConfig(filename='runlog.log', level=logging.DEBUG, format=FORMAT)
+
 
 def generate_random_genome(slots: int):
+    func = inspect.currentframe().f_back.f_code
     genome = []
     for i in range(slots):
         genome.append(random.randrange(2))
-    d.debug(genome)
     return genome
 
+
 if __name__ == "__main__":
-    players = []
-    for i in classes:
-        temp = Player(i)
-        players.append(temp)
 
-    players[0].add_attribute_points("strength", 100)
-
-    # print_character_stats(players[0].stats)
-    players[0].equip_item("Griffon's Eye")
-    players[0].equip_item("The Oculus")
-    players[0].equip_item("Skullder's Ire")
-    players[0].equip_item("Mara's Kaleidoscope")
-    players[0].equip_item("Lidless Wall")
-    players[0].equip_item("Magefist")
-    players[0].equip_item("Silkweave")
-    players[0].equip_item("Arachnid Mesh")
-    players[0].equip_item("The Stone of Jordan")
-    players[0].equip_item("The Stone of Jordan")
-    # print_character_stats(players[0].stats)
-
-    # players[0].equip_item("Skull Cap")
+    player = Player("Sorceress")
+    player.add_attribute_points("strength", 136)
+    player.add_attribute_points("dexterity", 100)
+    player.equip_item("Griffon's Eye")
+    player.equip_item("The Oculus")
+    player.equip_item("Skullder's Ire")
+    player.equip_item("Mara's Kaleidoscope")
+    player.equip_item("Lidless Wall")
+    player.equip_item("Magefist")
+    player.equip_item("Silkweave")
+    player.equip_item("Arachnid Mesh")
+    player.equip_item("The Stone of Jordan")
+    player.equip_item("The Stone of Jordan")
 
     unique_name = None
     name = None
 
-    x = players[0].slots
+    x = player.slots
     for k, v in x.items():
         try:
             if "index" in v.keys():
@@ -59,4 +63,3 @@ if __name__ == "__main__":
             print(unique_name)
         except:
             print(f"{k} not equipped")
-

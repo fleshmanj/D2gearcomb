@@ -1,20 +1,9 @@
 import json
 import pprint
+import logging
+import inspect
 
 from stat_meanings import stat_meanings
-
-
-class Debug:
-
-    def __init__(self):
-        self.debug_toggle = False
-
-    def debug(self, string_to_print):
-        if self.debug_toggle:
-            print(string_to_print)
-
-    def toggle_debug(self, input: bool):
-        self.debug_toggle = input
 
 
 def merge(item_dict: dict):
@@ -24,9 +13,12 @@ def merge(item_dict: dict):
             new_dict[next_key] = next_value
     return new_dict
 
+
 classes = ["Assassin", "amazon", "barbarian", "druid", "necromancer", "paladin", "sorceress"]
 
 
+def arrange_items(items: list) -> list:
+    return []
 
 
 def print_character_stats(my_dict):

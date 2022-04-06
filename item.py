@@ -1,10 +1,8 @@
 import json
 import math
+import logging
+import inspect
 
-from utils import Debug as d
-
-d = d()
-# d.toggle_debug(True)
 
 f = open("json/ItemTypes.json", "r")
 item_types = json.load(f)
@@ -26,9 +24,11 @@ f.close()
 class Item:
 
     def __init__(self):
+        func = inspect.currentframe().f_back.f_code
         self.name = None
 
     def find_item(self, name: str):
+        func = inspect.currentframe().f_back.f_code
         """
         Builds the item from json files
         """
@@ -37,9 +37,9 @@ class Item:
         while not found:
             for i in unique_items:
                 if name in unique_items[i].values():
-                    d.debug(f"Found {name} in the database")
+                    logging.debug(f"Found {name} in the database")
                     if unique_items[i]["code"] in weapons.keys():
-                        d.debug(f"Found {name} in the weapons database")
+                        logging.debug(f"Found {name} in the weapons database")
                         temp = weapons[unique_items[i]["code"]]["type"]
                         found_item[temp] = (item_types[temp])
                         found_item[unique_items[i]["code"]] = weapons[unique_items[i]["code"]]
@@ -47,7 +47,7 @@ class Item:
                         return found_item
 
                     elif unique_items[i]["code"] in armor.keys():
-                        d.debug(f"Found {name} in the armour database")
+                        logging.debug(f"Found {name} in the armour database")
                         temp = armor[unique_items[i]["code"]]["type"]
                         found_item[temp] = item_types[temp]
                         found_item[unique_items[i]["code"]] = armor[unique_items[i]["code"]]
@@ -55,30 +55,31 @@ class Item:
                         return found_item
 
                     elif unique_items[i]["code"] in item_types.keys():
-                        d.debug(f"Found {name} in the items database")
+                        logging.debug(f"Found {name} in the items database")
                         found_item[unique_items[i]["code"]] = item_types[unique_items[i]["code"]]
                         found_item[i] = (unique_items[i])
                         return found_item
 
             for i in weapons:
                 if name in weapons[i].values():
-                    d.debug(f"Found {name} in the weapons database")
+                    logging.debug(f"Found {name} in the weapons database")
                     temp = weapons[i]["type"]
                     found_item[temp] = item_types[temp]
                     found_item[i] = weapons[i]
                     return found_item
             for i in armor:
                 if name in armor[i].values():
-                    d.debug(f"Found {name} in the armor database")
+                    logging.debug(f"Found {name} in the armor database")
                     temp = armor[i]["type"]
                     found_item[temp] = item_types[temp]
                     found_item[i] = armor[i]
                     return found_item
             if not found:
-                d.debug(f"{name} not found")
+                logging.debug(f"{name} not found")
                 break
 
     def make_item(self, item_dict: dict):
+        func = inspect.currentframe().f_back.f_code
         property = 0
         item = {}
         if "minac" in item_dict.keys():
@@ -109,6 +110,7 @@ class Item:
         return item
 
     def build_stat_list(self, json_file_name):
+        func = inspect.currentframe().f_back.f_code
         keyword = "prop"
         stats = []
         clean_stats = []

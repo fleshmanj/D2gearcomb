@@ -1,16 +1,11 @@
 import math
 import pprint
 import json
+import logging
+import inspect
 
 from item import Item
-from utils import Debug
 from utils import print_character_stats, merge
-
-d = Debug()
-# d.toggle_debug(True)
-
-
-
 
 class Player:
     """
@@ -53,16 +48,19 @@ class Player:
 
     def add_attribute_points(self, attribute, number_of_points):
         attr = None
+        attribute = attribute.lower()
         if attribute == "strength":
             attr = "str"
         if attribute == "dexterity":
             attr = "dex"
         if attribute == "intellect":
             attr = "int"
-        if attribute == " vitality":
+        if attribute == "vitality":
             attr = "vit"
+        if attribute == "energy":
+            attr = "enr"
         if attr is not None:
-            d.debug("added points")
+            logging.debug(f"added {number_of_points} to {attribute}")
             self.stats[attr] = self.stats[attr] + number_of_points
 
     def equip_item(self, name):
@@ -74,24 +72,23 @@ class Player:
             temp = item.find_item(name)
             temp = merge(temp)
         except:
-            d.debug(f"Could not add {name}")
+            logging.debug(f"Could not add {name}")
 
         if temp is not None:
             item = item.make_item(temp)
-            d.debug(self.stats["str"])
-            d.debug(item["reqstr"])
+            logging.debug(f'player has {self.stats["str"]} and needs {item["reqstr"]}')
             if self.stats["str"] >= item["reqstr"]:
                 if "BodyLoc1" in temp.keys():
                     slot1 = temp["BodyLoc1"]
                     slot2 = temp["BodyLoc2"]
                 if self.slots[slot1] is None:
                     self.slots[slot1] = item
-                    d.debug(f"Equipped item in {slot1}")
+                    logging.debug(f"Equipped item in {slot1}")
                 elif self.slots[slot2] is None:
                     self.slots[slot2] = item
-                    d.debug(f"Equipped item in {slot2}")
+                    logging.debug(f"Equipped item in {slot2}")
                 else:
-                    d.debug("No open slots to equip item")
+                    logging.warn("No open slots to equip item")
 
                 self.add_item_stats(item)
             else:
