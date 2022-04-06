@@ -7,6 +7,7 @@ import inspect
 from item import Item
 from utils import print_character_stats, merge
 
+
 class Player:
     """
     attribute priorities minimum strength, minimum dexterity, max, vitality
@@ -101,17 +102,15 @@ class Player:
                 self.stats[key] = 0
             if key not in unallowed:
                 self.stats[key] = self.stats[key] + item[key]
+            if key == "mag%/lvl":
+                self.stats["mag%"] = self.stats["mag%"] + (value * self.level)
+            if key == "att%":
+                self.stats["att"] = self.stats["att"] + ((value / 100) * self.stats["att"])
+            if key == "mana%":
+                self.mana = self.mana + ((value / 100) * self.mana)
 
     def remove_item_stats(self, item):
         for key, value in item.items():
             self.stats[key] = self.stats[key] - item[key]
             if self.stats[key] == 0:
                 self.stats[key].pop()
-
-
-
-
-
-
-
-
