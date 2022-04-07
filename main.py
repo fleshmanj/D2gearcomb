@@ -15,6 +15,7 @@ import logging
 import inspect
 import os
 
+
 from utils import classes
 from item import Item
 from player import Player
@@ -23,7 +24,7 @@ if os.path.exists("./runlog.log"):
     os.remove('./runlog.log')
 
 FORMAT = "[{%(levelname)s} %(filename)s:%(lineno)s 	- %(funcName)20s() ] %(message)s"
-logging.basicConfig(filename='runlog.log', level=logging.DEBUG, format=FORMAT)
+logging.basicConfig(filename='runlog.log', level=logging.INFO, format=FORMAT)
 
 
 def generate_random_genome(slots: int):
@@ -53,13 +54,15 @@ if __name__ == "__main__":
     unique_name = None
     name = None
 
-    x = player.slots
-    for k, v in x.items():
-        try:
-            if "index" in v.keys():
-                unique_name = v["index"]
-            if "name" in v.keys():
-                name = v["name"]
-            print(unique_name)
-        except:
-            print(f"{k} not equipped")
+    # x = player.slots
+    # for k, v in x.items():
+    #     try:
+    #         if "index" in v.keys():
+    #             unique_name = v["index"]
+    #         if "name" in v.keys():
+    #             name = v["name"]
+    #         print(unique_name)
+    #     except:
+    #         print(f"{k} not equipped")
+    for k,v in player.stats.items():
+        print(f"{k}:{v}")

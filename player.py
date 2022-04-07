@@ -17,9 +17,6 @@ class Player:
         self.class_type = class_type
         self.stats = {}
         self.level = 0
-        self.life = 0
-        self.stamina = 0
-        self.mana = 0
         self.slots = {"head": None,
                       "glov": None,
                       "belt": None,
@@ -46,6 +43,46 @@ class Player:
 
     def levelup(self, number_of_levels=1):
         self.level += number_of_levels
+
+    def make_stats(self,**attr):
+        for k, v in attr.items():
+            self.stats[k] = v
+        if self.class_type == "Amazon":
+            self.stats["life"] = (self.level * 2) + (self.stats["vit"] * 3)
+            self.stats["stamina"] = (self.level * 1) + (self.stats["vit"] * 1)
+            self.stats["mana"] = (self.level * 1.5) + (self.stats["enr"] * 1.5)
+        if self.class_type == "Assassin":
+            self.stats["life"] = (self.level * 2) + (self.stats["vit"] * 3)
+            self.stats["stamina"] = (self.level * 1.25) + (self.stats["vit"] * 1.25)
+            self.stats["mana"] = (self.level * 1.5) + (self.stats["enr"] * 1.75)
+        if self.class_type == "Necromancer":
+            self.stats["life"] = (self.level * 1.5) + (self.stats["vit"] * 2)
+            self.stats["stamina"] = (self.level * 1) + (self.stats["vit"] * 1)
+            self.stats["mana"] = (self.level * 2) + (self.stats["enr"] * 2)
+        if self.class_type == "Barbarian":
+            self.stats["life"] = (self.level * 2) + (self.stats["vit"] * 4)
+            self.stats["stamina"] = (self.level * 1) + (self.stats["vit"] * 1)
+            self.stats["mana"] = (self.level * 1) + (self.stats["enr"] * 1)
+        if self.class_type == "Sorceress":
+            self.stats["life"] = (self.level * 2) + (self.stats["vit"] * 3)
+            self.stats["stamina"] = (self.level * 1.25) + (self.stats["vit"] * 1.25)
+            self.stats["mana"] = (self.level * 1.5) + (self.stats["enr"] * 1.75)
+        if self.class_type == "Druid":
+            self.stats["life"] = (self.level * 1.5) + (self.stats["vit"] * 2)
+            self.stats["stamina"] = (self.level * 1) + (self.stats["vit"] * 1)
+            self.stats["mana"] = (self.level * 2) + (self.stats["enr"] * 2)
+        if self.class_type == "Paladin":
+            self.stats["life"] = (self.level * 2) + (self.stats["vit"] * 3)
+            self.stats["stamina"] = (self.level * 1) + (self.stats["vit"] * 1)
+            self.stats["mana"] = (self.level * 1.5) + (self.stats["enr"] * 1.5)
+
+        if "mana%" in self.stats.keys():
+            self.stats["mana"] *= 1 + (self.stats["mana%"] / 100)
+        if "att%" in self.stats.keys():
+            self.stats["att"] *= 1 + (self.stats["att%"] / 100)
+
+
+
 
     def add_attribute_points(self, attribute, number_of_points):
         attr = None
@@ -89,13 +126,15 @@ class Player:
                     self.slots[slot2] = item
                     logging.debug(f"Equipped item in {slot2}")
                 else:
-                    logging.warn("No open slots to equip item")
+                    logging.warning("No open slots to equip item")
 
                 self.add_item_stats(item)
+                self.make_stats(mana=0, stamina=0, life=0)
             else:
                 print(f"Not enough strength to equip {item['name']}")
 
     def add_item_stats(self, item):
+        logging.debug(item.keys())
         unallowed = ['name', 'index', 'lvl req']
         for key, value in item.items():
             if key not in self.stats.keys() and key not in unallowed:
@@ -105,9 +144,20 @@ class Player:
             if key == "mag%/lvl":
                 self.stats["mag%"] = self.stats["mag%"] + (value * self.level)
             if key == "att%":
-                self.stats["att"] = self.stats["att"] + ((value / 100) * self.stats["att"])
+                self.stats["att%"] = self.stats["att%"] + item["att%"]
             if key == "mana%":
-                self.mana = self.mana + ((value / 100) * self.mana)
+                self.stats["mana%"] = self.stats["mana%"] + item["mana%"]
+            if key == "ac%" and "ac" in item.keys():
+                self.stats["ac"] += 1 + (item["ac%"] / 100 * item["ac"])
+                logging.debug(f"{item['name']} added {1 + (item['ac%'] / 100 * item['ac'])}")
+            if key == "ac%" and "ac" not in item.keys():
+                self.stats["ac%"] += item["ac%"]
+                logging.debug(f"{item['name']} added {item['ac%']} to ac%")
+            if key == "str":
+                self.stats["str"] = self.stats["str"] + item["str"]
+            if key == "dex":
+                self.stats["dex"] = self.stats["dex"] + item["dex"]
+
 
     def remove_item_stats(self, item):
         for key, value in item.items():

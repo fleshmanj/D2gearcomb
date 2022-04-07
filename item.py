@@ -82,6 +82,7 @@ class Item:
         func = inspect.currentframe().f_back.f_code
         property = 0
         item = {}
+        ac = 0
         if "minac" in item_dict.keys():
             ac = math.floor((item_dict["minac"] + item_dict["maxac"]) / 2)
         for k, v in item_dict.items():
@@ -92,6 +93,8 @@ class Item:
                         (item_dict[f"min{property}"] + item_dict[f"max{property}"]) / 2)
                 except:
                     item[item_dict[f"prop{property}"]] = item_dict[f"par{property}"]
+        if "ac" in item_dict.keys():
+            item["ac"] = item_dict["ac"]
         if "ac" in item.keys():
             item["ac"] = item["ac"] + ac
 
