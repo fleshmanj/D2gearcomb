@@ -24,7 +24,7 @@ if os.path.exists("./runlog.log"):
     os.remove('./runlog.log')
 
 FORMAT = "[{%(levelname)s} %(filename)s:%(lineno)s 	- %(funcName)20s() ] %(message)s"
-logging.basicConfig(filename='runlog.log', level=logging.INFO, format=FORMAT)
+logging.basicConfig(filename='runlog.log', level=logging.DEBUG, format=FORMAT)
 
 
 def generate_random_genome(slots: int):

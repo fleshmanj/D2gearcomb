@@ -79,12 +79,17 @@ class Item:
                 break
 
     def make_item(self, item_dict: dict):
+        logging.debug(f"item_dict:{item_dict}")
         func = inspect.currentframe().f_back.f_code
         property = 0
         item = {}
-        ac = 0
-        if "minac" in item_dict.keys():
-            ac = math.floor((item_dict["minac"] + item_dict["maxac"]) / 2)
+
+        # Commented out for max item defense testing
+        # if "minac" in item_dict.keys():
+        #     item["ac"] = math.floor((item_dict["minac"] + item_dict["maxac"]) / 2)
+
+        if "maxac" in item_dict.keys():
+            item["ac"] = item_dict["maxac"]
         for k, v in item_dict.items():
             if "prop" in k:
                 property += 1
@@ -93,10 +98,16 @@ class Item:
                         (item_dict[f"min{property}"] + item_dict[f"max{property}"]) / 2)
                 except:
                     item[item_dict[f"prop{property}"]] = item_dict[f"par{property}"]
-        if "ac" in item_dict.keys():
-            item["ac"] = item_dict["ac"]
+
         if "ac" in item.keys():
-            item["ac"] = item["ac"] + ac
+            logging.debug(f"ac in {item_dict['name']}")
+            if "ac%" in item_dict.values():
+                logging.debug(f"{item_dict['name']}'s defense set to {item['ac'] * (1 + (item['ac%'] / 100))}")
+                item["ac"] *= 1 + (item["ac%"] / 100)
+
+        if "ac%" in item_dict.keys() and "ac" not in item.keys():
+            logging.debug(f"{item_dict['name']}'s defense set to {item_dict['ac%']}")
+            item["ac%"] = item_dict["ac%"]
 
         if "lvl req" in item_dict.keys():
             item["lvl req"] = item_dict["lvl req"]

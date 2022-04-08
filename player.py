@@ -80,6 +80,11 @@ class Player:
             self.stats["mana"] *= 1 + (self.stats["mana%"] / 100)
         if "att%" in self.stats.keys():
             self.stats["att"] *= 1 + (self.stats["att%"] / 100)
+        if "ac%" in self.stats.keys():
+            logging.debug(f"base_ac is {self.stats['base_ac']}")
+            logging.debug(f"ac% is {self.stats['ac%']}")
+            self.stats["ac"] = self.stats["base_ac"] * (1 + (self.stats["ac%"] / 100))
+
 
 
 
@@ -136,6 +141,8 @@ class Player:
     def add_item_stats(self, item):
         logging.debug(item.keys())
         unallowed = ['name', 'index', 'lvl req']
+        if "base_ac" not in self.stats.keys():
+            self.stats["base_ac"] = 0
         for key, value in item.items():
             if key not in self.stats.keys() and key not in unallowed:
                 self.stats[key] = 0
@@ -144,13 +151,13 @@ class Player:
             if key == "mag%/lvl":
                 self.stats["mag%"] = self.stats["mag%"] + (value * self.level)
             if key == "att%":
-                self.stats["att%"] = self.stats["att%"] + item["att%"]
+                self.stats["att%"] += item["att%"]
             if key == "mana%":
-                self.stats["mana%"] = self.stats["mana%"] + item["mana%"]
-            if key == "ac%" and "ac" in item.keys():
-                self.stats["ac"] += 1 + (item["ac%"] / 100 * item["ac"])
-                logging.debug(f"{item['name']} added {1 + (item['ac%'] / 100 * item['ac'])}")
-            if key == "ac%" and "ac" not in item.keys():
+                self.stats["mana%"] += item["mana%"]
+            if key == "ac":
+                self.stats["base_ac"] += item["ac"]
+                logging.debug(f"{item['name']} added {item['ac']} defense.")
+            if key == "ac%":
                 self.stats["ac%"] += item["ac%"]
                 logging.debug(f"{item['name']} added {item['ac%']} to ac%")
             if key == "str":
