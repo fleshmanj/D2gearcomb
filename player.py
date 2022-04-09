@@ -48,31 +48,38 @@ class Player:
         for k, v in attr.items():
             self.stats[k] = v
         if self.class_type == "Amazon":
-            self.stats["life"] = (self.level * 2) + (self.stats["vit"] * 3)
+            self.stats["life"] = ((self.stats["LifePerVitality"] / 4) * self.stats["vit"]) + (
+                (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
             self.stats["stamina"] = (self.level * 1) + (self.stats["vit"] * 1)
             self.stats["mana"] = (self.level * 1.5) + (self.stats["enr"] * 1.5)
         if self.class_type == "Assassin":
-            self.stats["life"] = (self.level * 2) + (self.stats["vit"] * 3)
+            self.stats["life"] = ((self.stats["LifePerVitality"] / 4) * self.stats["vit"]) + (
+                (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
             self.stats["stamina"] = (self.level * 1.25) + (self.stats["vit"] * 1.25)
             self.stats["mana"] = (self.level * 1.5) + (self.stats["enr"] * 1.75)
         if self.class_type == "Necromancer":
-            self.stats["life"] = (self.level * 1.5) + (self.stats["vit"] * 2)
+            self.stats["life"] = ((self.stats["LifePerVitality"] / 4) * self.stats["vit"]) + (
+                (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
             self.stats["stamina"] = (self.level * 1) + (self.stats["vit"] * 1)
             self.stats["mana"] = (self.level * 2) + (self.stats["enr"] * 2)
         if self.class_type == "Barbarian":
-            self.stats["life"] = (self.level * 2) + (self.stats["vit"] * 4)
+            self.stats["life"] = ((self.stats["LifePerVitality"] / 4) * self.stats["vit"]) + (
+                (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
             self.stats["stamina"] = (self.level * 1) + (self.stats["vit"] * 1)
             self.stats["mana"] = (self.level * 1) + (self.stats["enr"] * 1)
         if self.class_type == "Sorceress":
-            self.stats["life"] = (self.level * 2) + (self.stats["vit"] * 3)
+            self.stats["life"] = ((self.stats["LifePerVitality"] / 4) * self.stats["vit"]) + (
+                (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
             self.stats["stamina"] = (self.level * 1.25) + (self.stats["vit"] * 1.25)
             self.stats["mana"] = (self.level * 1.5) + (self.stats["enr"] * 1.75)
         if self.class_type == "Druid":
-            self.stats["life"] = (self.level * 1.5) + (self.stats["vit"] * 2)
+            self.stats["life"] = ((self.stats["LifePerVitality"] / 4) * self.stats["vit"]) + (
+                (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
             self.stats["stamina"] = (self.level * 1) + (self.stats["vit"] * 1)
             self.stats["mana"] = (self.level * 2) + (self.stats["enr"] * 2)
         if self.class_type == "Paladin":
-            self.stats["life"] = (self.level * 2) + (self.stats["vit"] * 3)
+            self.stats["life"] = ((self.stats["LifePerVitality"] / 4) * self.stats["vit"]) + (
+                (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
             self.stats["stamina"] = (self.level * 1) + (self.stats["vit"] * 1)
             self.stats["mana"] = (self.level * 1.5) + (self.stats["enr"] * 1.5)
 
@@ -146,7 +153,7 @@ class Player:
         for key, value in item.items():
             if key not in self.stats.keys() and key not in unallowed:
                 self.stats[key] = 0
-            if key not in unallowed:
+            if key not in unallowed and key != "ac%":
                 self.stats[key] = self.stats[key] + item[key]
             if key == "mag%/lvl":
                 self.stats["mag%"] = self.stats["mag%"] + (value * self.level)
@@ -159,7 +166,6 @@ class Player:
                 logging.debug(f"{item['name']} added {item['ac']} defense.")
             if key == "ac%":
                 self.stats["ac%"] += item["ac%"]
-                logging.debug(f"{item['name']} added {item['ac%']} to ac%")
             if key == "str":
                 self.stats["str"] = self.stats["str"] + item["str"]
             if key == "dex":

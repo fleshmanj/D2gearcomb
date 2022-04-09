@@ -37,9 +37,20 @@ def generate_random_genome(slots: int):
 
 if __name__ == "__main__":
 
+    """
+    
+    up unitl 100
+    crushing blow
+    deadly strike 
+    openwounds
+    """
+
     player = Player("Sorceress")
-    player.add_attribute_points("strength", 136)
-    player.add_attribute_points("dexterity", 100)
+
+    player.levelup(99)
+
+    player.add_attribute_points("strength", 92)
+    player.add_attribute_points("vitality", 408)
     player.equip_item("Griffon's Eye")
     player.equip_item("The Oculus")
     player.equip_item("Skullder's Ire")
@@ -64,5 +75,6 @@ if __name__ == "__main__":
     #         print(unique_name)
     #     except:
     #         print(f"{k} not equipped")
+    print(player.level)
     for k,v in player.stats.items():
         print(f"{k}:{v}")

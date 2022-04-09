@@ -94,16 +94,23 @@ class Item:
             if "prop" in k:
                 property += 1
                 try:
-                    item[item_dict[f"prop{property}"]] = math.floor(
-                        (item_dict[f"min{property}"] + item_dict[f"max{property}"]) / 2)
+                    # item[item_dict[f"prop{property}"]] = math.floor(
+                    #     (item_dict[f"min{property}"] + item_dict[f"max{property}"]) / 2)
+                    # added max modifiers
+                    if v == "ac":
+                        if "ac" in item.keys():
+                            item["ac"] = item["ac"] + item_dict[f"max{property}"]
+                    else:
+                        item[item_dict[f"prop{property}"]] = math.floor(item_dict[f"max{property}"])
                 except:
                     item[item_dict[f"prop{property}"]] = item_dict[f"par{property}"]
 
         if "ac" in item.keys():
-            logging.debug(f"ac in {item_dict['name']}")
+            # logging.debug(f"ac in {item_dict['name']}")
             if "ac%" in item_dict.values():
                 logging.debug(f"{item_dict['name']}'s defense set to {item['ac'] * (1 + (item['ac%'] / 100))}")
                 item["ac"] *= 1 + (item["ac%"] / 100)
+                item["ac%"] = 0
 
         if "ac%" in item_dict.keys() and "ac" not in item.keys():
             logging.debug(f"{item_dict['name']}'s defense set to {item_dict['ac%']}")
