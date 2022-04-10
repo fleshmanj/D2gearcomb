@@ -175,4 +175,6 @@ stat_meanings = {'str': 'Strength',
                  'extra-pois': 'Extra Poison Damage',
                  'levelup-skill': 'Cast Skill On Levelup',
                  'randclassskill': 'Random Class Skill',
+                 'reqstr': 'Required Strength',
+                 'reqdex': 'Required Dexterity'
                  }

@@ -15,7 +15,7 @@ import logging
 import inspect
 import os
 
-
+import utils
 from utils import classes
 from item import Item
 from player import Player
@@ -38,29 +38,58 @@ def generate_random_genome(slots: int):
 if __name__ == "__main__":
 
     """
-    
-    up unitl 100
+    up until 100
     crushing blow
     deadly strike 
     openwounds
+    
+    use custom breakpoints
+    faster cast rate
+    increased attack speed
+    
+    life stolen
+    mana stolen
     """
+    # Sorc test
+    # player = Player("Sorceress")
+    #
+    # player.levelup(99)
+    #
+    # player.add_attribute_points("strength", 92)
+    # player.add_attribute_points("vitality", 408)
+    # player.equip_item("Griffon's Eye")
+    # player.equip_item("The Oculus")
+    # player.equip_item("Skullder's Ire")
+    # player.equip_item("Mara's Kaleidoscope")
+    # player.equip_item("Lidless Wall")
+    # player.equip_item("Magefist")
+    # player.equip_item("Silkweave")
+    # player.equip_item("Arachnid Mesh")
+    # player.equip_item("The Stone of Jordan")
+    # player.equip_item("The Stone of Jordan")
 
+    # Barb test
     player = Player("Sorceress")
 
+    barb_equipment = ["Boneflesh", "Bul Katho's Wedding Band", "Carrion Wind", "Dracul's Grasp","Gorerider", "Highlord's Wrath", "Swordback Hold", "The Gnasher", "Vampiregaze", "Verdugo's Hearty Cord"]
+    sorc_equipment = ["Griffon's Eye", "The Oculus", "Skullder's Ire", "Mara's Kaleidoscope", "Lidless Wall",
+                      "Magefist", "Aldur's Advance", "Arachnid Mesh", "The Stone of Jordan", "The Stone of Jordan"]
     player.levelup(99)
 
-    player.add_attribute_points("strength", 92)
-    player.add_attribute_points("vitality", 408)
-    player.equip_item("Griffon's Eye")
-    player.equip_item("The Oculus")
-    player.equip_item("Skullder's Ire")
-    player.equip_item("Mara's Kaleidoscope")
-    player.equip_item("Lidless Wall")
-    player.equip_item("Magefist")
-    player.equip_item("Silkweave")
-    player.equip_item("Arachnid Mesh")
-    player.equip_item("The Stone of Jordan")
-    player.equip_item("The Stone of Jordan")
+    # player.add_attribute_points("strength", 88)
+    # player.add_attribute_points("vitality", 213)
+    # player.add_attribute_points("dexterity", 181)
+    player.equip_item(sorc_equipment)
+    # player.equip_item("Boneflesh")
+    # player.equip_item("Bul Katho's Wedding Band")
+    # player.equip_item("Carrion Wind")
+    # player.equip_item("Dracul's Grasp")
+    # player.equip_item("Gorerider")
+    # player.equip_item("Highlord's Wrath")
+    # player.equip_item("Swordback Hold")
+    # player.equip_item("The Gnasher")
+    # player.equip_item("Vampiregaze")
+    # player.equip_item("Verdugo's Hearty Cord")
 
     unique_name = None
     name = None
@@ -75,6 +104,15 @@ if __name__ == "__main__":
     #         print(unique_name)
     #     except:
     #         print(f"{k} not equipped")
-    print(player.level)
-    for k,v in player.stats.items():
-        print(f"{k}:{v}")
+    # utils.print_character_stats(player.stats)
+
+    for k,v in player.slots.items():
+        if v != None:
+            print(f"Equipped {v['index']} in {k}")
+
+
+    item = Item()
+    item = item.find_item("Aldur's Advance")
+    # for i in item:
+    #     for key in item[i]:
+    #         print(f"{key}: {item[i][key]}")

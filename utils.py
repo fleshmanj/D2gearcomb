@@ -24,6 +24,6 @@ def arrange_items(items: list) -> list:
 def print_character_stats(my_dict):
     for key, value in my_dict.items():
         if key in stat_meanings:
-            print(stat_meanings[key], value)
+            print(f"{stat_meanings[key]}: {value}")
         else:
-            print(key, value)
+            print(f"{key}: {value}")

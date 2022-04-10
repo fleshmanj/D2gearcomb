@@ -20,6 +20,14 @@ f = open("json/UniqueItems.json", "r")
 unique_items = json.load(f)
 f.close()
 
+f = open("json/SetItems.json", "r")
+set_items = json.load(f)
+f.close()
+
+f = open("json/Sets.json", "r")
+sets = json.load(f)
+f.close()
+
 
 class Item:
 
@@ -74,6 +82,31 @@ class Item:
                     found_item[temp] = item_types[temp]
                     found_item[i] = armor[i]
                     return found_item
+
+            for i in set_items:
+                if name in set_items[i].values():
+                    logging.debug(f"Found {name} in set_items")
+                    if set_items[i]["item"] in weapons.keys():
+                        logging.debug(f"Found {name} in the weapons database")
+                        temp = weapons[set_items[i]["item"]]
+                        found_item[temp] = (item_types[temp])
+                        found_item[set_items[i]["item"]] = weapons[set_items[i]["item"]]
+                        found_item[i] = set_items[i]
+                        return found_item
+
+                    elif set_items[i]["item"] in armor.keys():
+                        logging.debug(f"Found {name} in the armour database")
+                        temp = armor[set_items[i]["item"]]
+                        found_item[temp["type"]] = item_types[temp["type"]]
+                        found_item[set_items[i]["item"]] = armor[set_items[i]["item"]]
+                        found_item[i] = set_items[i]
+                        return found_item
+
+                    elif set_items[i]["item"] in item_types.keys():
+                        logging.debug(f"Found {name} in the items database")
+                        found_item[set_items[i]["item"]] = item_types[set_items[i]["item"]]
+                        found_item[i] = (set_items[i])
+                        return found_item
             if not found:
                 logging.debug(f"{name} not found")
                 break
@@ -128,6 +161,12 @@ class Item:
             item["reqstr"] = item_dict["reqstr"]
         else:
             item["reqstr"] = 0
+        if "reqdex" in item_dict.keys():
+            item["reqdex"] = item_dict["reqdex"]
+        else:
+            item["reqdex"] = 0
+        if "set" in item_dict.keys():
+            item[item_dict["set"]] = 1
         return item
 
     def build_stat_list(self, json_file_name):

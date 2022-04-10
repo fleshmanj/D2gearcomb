@@ -38,48 +38,53 @@ class Player:
         data = json.load(f)
         if class_type in data.keys():
             self.stats = data[class_type]
-        self.life = ((self.stats["LifePerVitality"] / 4) * self.stats["vit"]) + (
+        self.stats['life'] = ((self.stats["LifePerVitality"] / 4) * self.stats["vit"]) + (
                 (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
+        self.stats["points_to_spend"] = 0
 
     def levelup(self, number_of_levels=1):
         self.level += number_of_levels
+        self.stats["points_to_spend"] += 5 * number_of_levels
 
-    def make_stats(self,**attr):
+    def make_stats(self, **attr):
         for k, v in attr.items():
             self.stats[k] = v
         if self.class_type == "Amazon":
             self.stats["life"] = ((self.stats["LifePerVitality"] / 4) * self.stats["vit"]) + (
-                (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
+                    (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
             self.stats["stamina"] = (self.level * 1) + (self.stats["vit"] * 1)
             self.stats["mana"] = (self.level * 1.5) + (self.stats["enr"] * 1.5)
         if self.class_type == "Assassin":
             self.stats["life"] = ((self.stats["LifePerVitality"] / 4) * self.stats["vit"]) + (
-                (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
+                    (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
             self.stats["stamina"] = (self.level * 1.25) + (self.stats["vit"] * 1.25)
             self.stats["mana"] = (self.level * 1.5) + (self.stats["enr"] * 1.75)
         if self.class_type == "Necromancer":
             self.stats["life"] = ((self.stats["LifePerVitality"] / 4) * self.stats["vit"]) + (
-                (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
+                    (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
             self.stats["stamina"] = (self.level * 1) + (self.stats["vit"] * 1)
             self.stats["mana"] = (self.level * 2) + (self.stats["enr"] * 2)
         if self.class_type == "Barbarian":
             self.stats["life"] = ((self.stats["LifePerVitality"] / 4) * self.stats["vit"]) + (
-                (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
+                    (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
             self.stats["stamina"] = (self.level * 1) + (self.stats["vit"] * 1)
             self.stats["mana"] = (self.level * 1) + (self.stats["enr"] * 1)
         if self.class_type == "Sorceress":
             self.stats["life"] = ((self.stats["LifePerVitality"] / 4) * self.stats["vit"]) + (
-                (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
+                    (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
+            logging.debug(
+                f"(({self.stats['LifePerVitality']} / 4) * {self.stats['vit']}) + (({self.stats['LifePerLevel']} / 4) *"
+                f"{self.level}) + {self.stats['hpadd']}")
             self.stats["stamina"] = (self.level * 1.25) + (self.stats["vit"] * 1.25)
             self.stats["mana"] = (self.level * 1.5) + (self.stats["enr"] * 1.75)
         if self.class_type == "Druid":
             self.stats["life"] = ((self.stats["LifePerVitality"] / 4) * self.stats["vit"]) + (
-                (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
+                    (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
             self.stats["stamina"] = (self.level * 1) + (self.stats["vit"] * 1)
             self.stats["mana"] = (self.level * 2) + (self.stats["enr"] * 2)
         if self.class_type == "Paladin":
             self.stats["life"] = ((self.stats["LifePerVitality"] / 4) * self.stats["vit"]) + (
-                (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
+                    (self.stats["LifePerLevel"] / 4) * self.level) + self.stats["hpadd"]
             self.stats["stamina"] = (self.level * 1) + (self.stats["vit"] * 1)
             self.stats["mana"] = (self.level * 1.5) + (self.stats["enr"] * 1.5)
 
@@ -91,10 +96,6 @@ class Player:
             logging.debug(f"base_ac is {self.stats['base_ac']}")
             logging.debug(f"ac% is {self.stats['ac%']}")
             self.stats["ac"] = self.stats["base_ac"] * (1 + (self.stats["ac%"] / 100))
-
-
-
-
 
     def add_attribute_points(self, attribute, number_of_points):
         attr = None
@@ -112,38 +113,79 @@ class Player:
         if attr is not None:
             logging.debug(f"added {number_of_points} to {attribute}")
             self.stats[attr] = self.stats[attr] + number_of_points
+        self.make_stats(mana=0, stamina=0, life=0)
 
-    def equip_item(self, name):
-        temp = None
-        item = Item()
-        slot1 = None
-        slot2 = None
-        try:
-            temp = item.find_item(name)
-            temp = merge(temp)
-        except:
-            logging.debug(f"Could not add {name}")
+    def equip_item(self, name: list):
+        while True:
+            need_str = False
+            need_dex = False
+            item_equiped = False
+            for i in name:
+                temp = None
+                item = Item()
+                slot1 = None
+                slot2 = None
+                try:
+                    temp = item.find_item(i)
+                    temp = merge(temp)
+                except Exception as e:
+                    logging.debug(f"Could not add {i}")
+                    logging.debug(e)
 
-        if temp is not None:
-            item = item.make_item(temp)
-            logging.debug(f'player has {self.stats["str"]} and needs {item["reqstr"]}')
-            if self.stats["str"] >= item["reqstr"]:
-                if "BodyLoc1" in temp.keys():
-                    slot1 = temp["BodyLoc1"]
-                    slot2 = temp["BodyLoc2"]
-                if self.slots[slot1] is None:
-                    self.slots[slot1] = item
-                    logging.debug(f"Equipped item in {slot1}")
-                elif self.slots[slot2] is None:
-                    self.slots[slot2] = item
-                    logging.debug(f"Equipped item in {slot2}")
-                else:
-                    logging.warning("No open slots to equip item")
+                if temp is not None:
+                    item = item.make_item(temp)
+                    logging.debug(f'player has {self.stats["str"]} and needs {item["reqstr"]}')
 
-                self.add_item_stats(item)
-                self.make_stats(mana=0, stamina=0, life=0)
+                    if self.stats["str"] >= item["reqstr"] and self.stats["dex"] >= item["reqdex"]:
+                        if "BodyLoc1" in temp.keys():
+                            slot1 = temp["BodyLoc1"]
+                            slot2 = temp["BodyLoc2"]
+                        if self.slots[slot1] is None:
+                            self.slots[slot1] = item
+                            item_equiped = True
+                            logging.debug(f"Equipped item in {slot1}")
+                            name.remove(i)
+                            logging.debug(f"Removed {i}")
+                        elif self.slots[slot2] is None:
+                            self.slots[slot2] = item
+                            item_equiped = True
+                            logging.debug(f"Equipped item in {slot2}")
+                            name.remove(i)
+                            logging.debug(f"Removed {i}")
+                        else:
+                            logging.warning("No open slots to equip item")
+
+                        self.add_item_stats(item)
+                        self.make_stats(mana=0, stamina=0, life=0)
+
+                    else:
+                        logging.debug(f"Not enough strength to equip {item['index']}")
+                        if item["reqstr"] > self.stats["str"]:
+                            need_str = True
+
+                        if item["reqdex"] > self.stats["dex"]:
+                            need_dex = True
+
+            if not item_equiped and len(name) == 0:
+                if self.stats["points_to_spend"] > 0:
+                    self.add_attribute_points("vitality", self.stats["points_to_spend"])
+                    self.stats["points_to_spend"] -= self.stats["points_to_spend"]
+                break
             else:
-                print(f"Not enough strength to equip {item['name']}")
+                if need_str:
+                    if self.stats["points_to_spend"] > 0:
+                        logging.debug("added 1 strength")
+                        self.add_attribute_points("strength", 1)
+                        self.stats["points_to_spend"] -= 1
+
+                if need_dex:
+                    if self.stats["points_to_spend"] > 0:
+                        logging.debug("added 1 dexterity")
+                        self.add_attribute_points("dexterity", 1)
+                        self.stats["points_to_spend"] -= 1
+
+                if self.stats["points_to_spend"] <= 0:
+                    break
 
     def add_item_stats(self, item):
         logging.debug(item.keys())
@@ -170,7 +212,6 @@ class Player:
                 self.stats["str"] = self.stats["str"] + item["str"]
             if key == "dex":
                 self.stats["dex"] = self.stats["dex"] + item["dex"]
-
 
     def remove_item_stats(self, item):
         for key, value in item.items():
