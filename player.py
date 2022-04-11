@@ -3,6 +3,7 @@ import pprint
 import json
 import logging
 import inspect
+import item as item_py
 
 from item import Item
 from utils import print_character_stats, merge
@@ -212,6 +213,24 @@ class Player:
                 self.stats["str"] = self.stats["str"] + item["str"]
             if key == "dex":
                 self.stats["dex"] = self.stats["dex"] + item["dex"]
+            if key in item_py.sets.keys():
+                logging.debug(f"value is {value}")
+                logging.debug(f"add func is {item['add func']}")
+                property_num = 0
+                for keys in item.keys():
+                    if str(keys).startswith("aprop"):
+                        property_num += 1
+                        globals()[f"var{property_num}"] = keys.strip(f'aprop{property_num}_')
+                        exec(f"var{property_num} = keys.strip(f'aprop{property_num}_')")
+                        logging.debug(globals()[f"var{property_num}"])
+                #TODO need to add additional stats from set bonus and set item bonus
+                if self.stats[f"{key}"] == item["add func"]:
+                    logging.debug(f"set bonus enabled tier 1")
+                    self.stats[globals()[f"var1"]] = self.stats[globals()[f"var1"]] + item[f"aprop{1}_{globals()[f'var1']}"]
+                    print(self.stats[globals()[f"var1"]])
+
+
+
 
     def remove_item_stats(self, item):
         for key, value in item.items():

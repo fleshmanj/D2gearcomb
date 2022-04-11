@@ -72,7 +72,7 @@ if __name__ == "__main__":
     player = Player("Sorceress")
 
     barb_equipment = ["Boneflesh", "Bul Katho's Wedding Band", "Carrion Wind", "Dracul's Grasp","Gorerider", "Highlord's Wrath", "Swordback Hold", "The Gnasher", "Vampiregaze", "Verdugo's Hearty Cord"]
-    sorc_equipment = ["Griffon's Eye", "The Oculus", "Skullder's Ire", "Mara's Kaleidoscope", "Lidless Wall",
+    sorc_equipment = ["Griffon's Eye", "The Oculus", "Aldur's Deception", "Mara's Kaleidoscope", "Lidless Wall",
                       "Magefist", "Aldur's Advance", "Arachnid Mesh", "The Stone of Jordan", "The Stone of Jordan"]
     player.levelup(99)
 
@@ -110,9 +110,9 @@ if __name__ == "__main__":
         if v != None:
             print(f"Equipped {v['index']} in {k}")
 
+    # print(player.slots["feet"])
 
-    item = Item()
-    item = item.find_item("Aldur's Advance")
+
     # for i in item:
     #     for key in item[i]:
     #         print(f"{key}: {item[i][key]}")

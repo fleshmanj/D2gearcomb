@@ -115,6 +115,7 @@ class Item:
         logging.debug(f"item_dict:{item_dict}")
         func = inspect.currentframe().f_back.f_code
         property = 0
+        aproperty = 0
         item = {}
 
         # Commented out for max item defense testing
@@ -124,7 +125,7 @@ class Item:
         if "maxac" in item_dict.keys():
             item["ac"] = item_dict["maxac"]
         for k, v in item_dict.items():
-            if "prop" in k:
+            if str(k).startswith("prop"):
                 property += 1
                 try:
                     # item[item_dict[f"prop{property}"]] = math.floor(
@@ -137,6 +138,17 @@ class Item:
                         item[item_dict[f"prop{property}"]] = math.floor(item_dict[f"max{property}"])
                 except:
                     item[item_dict[f"prop{property}"]] = item_dict[f"par{property}"]
+            elif str(k).startswith("aprop"):
+                aproperty += 1
+                try:
+                    # item[item_dict[f"prop{property}"]] = math.floor(
+                    #     (item_dict[f"min{property}"] + item_dict[f"max{property}"]) / 2)
+                    # added max modifiers
+
+                    item[f"aprop{aproperty}_{item_dict[f'aprop{aproperty}a']}"] = math.floor(item_dict[f"amax{aproperty}a"])
+                except:
+                    item[f"aprop{aproperty}_{item_dict[f'aprop{aproperty}a']}"] = item_dict[f"apar{aproperty}a"]
+
 
         if "ac" in item.keys():
             # logging.debug(f"ac in {item_dict['name']}")
@@ -167,6 +179,8 @@ class Item:
             item["reqdex"] = 0
         if "set" in item_dict.keys():
             item[item_dict["set"]] = 1
+        if "add func" in item_dict.keys():
+            item["add func"] = item_dict["add func"]
         return item
 
     def build_stat_list(self, json_file_name):
