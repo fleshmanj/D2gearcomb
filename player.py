@@ -116,12 +116,12 @@ class Player:
             self.stats[attr] = self.stats[attr] + number_of_points
         self.make_stats(mana=0, stamina=0, life=0)
 
-    def equip_item(self, name: list):
+    def equip_item(self, equip_list: list):
         while True:
             need_str = False
             need_dex = False
             item_equiped = False
-            for i in name:
+            for i in equip_list:
                 temp = None
                 item = Item()
                 slot1 = None
@@ -145,13 +145,13 @@ class Player:
                             self.slots[slot1] = item
                             item_equiped = True
                             logging.debug(f"Equipped item in {slot1}")
-                            name.remove(i)
+                            equip_list.remove(i)
                             logging.debug(f"Removed {i}")
                         elif self.slots[slot2] is None:
                             self.slots[slot2] = item
                             item_equiped = True
                             logging.debug(f"Equipped item in {slot2}")
-                            name.remove(i)
+                            equip_list.remove(i)
                             logging.debug(f"Removed {i}")
                         else:
                             logging.warning("No open slots to equip item")
@@ -167,7 +167,7 @@ class Player:
                         if item["reqdex"] > self.stats["dex"]:
                             need_dex = True
 
-            if not item_equiped and len(name) == 0:
+            if not item_equiped and len(equip_list) == 0:
                 if self.stats["points_to_spend"] > 0:
                     self.add_attribute_points("vitality", self.stats["points_to_spend"])
                     self.stats["points_to_spend"] -= self.stats["points_to_spend"]
@@ -223,11 +223,11 @@ class Player:
                         globals()[f"var{property_num}"] = keys.strip(f'aprop{property_num}_')
                         exec(f"var{property_num} = keys.strip(f'aprop{property_num}_')")
                         logging.debug(globals()[f"var{property_num}"])
-                #TODO need to add additional stats from set bonus and set item bonus
-                if self.stats[f"{key}"] == item["add func"]:
-                    logging.debug(f"set bonus enabled tier 1")
-                    self.stats[globals()[f"var1"]] = self.stats[globals()[f"var1"]] + item[f"aprop{1}_{globals()[f'var1']}"]
-                    print(self.stats[globals()[f"var1"]])
+                    #TODO need to add additional stats from set bonus and set item bonus
+                    if self.stats[f"{key}"] == item["add func"]:
+                        logging.debug(f"set bonus enabled tier 1")
+                        self.stats[globals()[f"var1"]] = self.stats[globals()[f"var1"]] + item[f"aprop{1}_{globals()[f'var1']}"]
+                        print(self.stats[globals()[f"var1"]])
 
 
 
