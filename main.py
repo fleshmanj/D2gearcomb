@@ -52,44 +52,31 @@ if __name__ == "__main__":
     """
     # Sorc test
     # player = Player("Sorceress")
-    #
-    # player.levelup(99)
-    #
-    # player.add_attribute_points("strength", 92)
-    # player.add_attribute_points("vitality", 408)
-    # player.equip_item("Griffon's Eye")
-    # player.equip_item("The Oculus")
-    # player.equip_item("Skullder's Ire")
-    # player.equip_item("Mara's Kaleidoscope")
-    # player.equip_item("Lidless Wall")
-    # player.equip_item("Magefist")
-    # player.equip_item("Silkweave")
-    # player.equip_item("Arachnid Mesh")
-    # player.equip_item("The Stone of Jordan")
-    # player.equip_item("The Stone of Jordan")
+    # sorc_equipment = ["Griffon's Eye", "The Oculus", "Aldur's Deception", "Mara's Kaleidoscope", "Lidless Wall",
+    #                   "Magefist", "Aldur's Advance", "Arachnid Mesh", "The Stone of Jordan", "The Stone of Jordan"]
+    # player.equip_item(sorc_equipment)
 
     # Barb test
-    player = Player("Sorceress")
+    player = Player("Barbarian")
 
     barb_equipment = ["Boneflesh", "Bul Katho's Wedding Band", "Carrion Wind", "Dracul's Grasp","Gorerider", "Highlord's Wrath", "Swordback Hold", "The Gnasher", "Vampiregaze", "Verdugo's Hearty Cord"]
-    sorc_equipment = ["Griffon's Eye", "The Oculus", "Aldur's Deception", "Mara's Kaleidoscope", "Lidless Wall",
-                      "Magefist", "Aldur's Advance", "Arachnid Mesh", "The Stone of Jordan", "The Stone of Jordan"]
     player.levelup(99)
+    player.equip_item(barb_equipment)
+
+    for k,v in player.slots.items():
+        if v != None:
+            print(f"Equipped {v['index']} in {k}")
+
+    player.add_item_stats(player.slots)
+    player.update_stats(mana=0, stamina=0, life=0)
+
+
 
     # player.add_attribute_points("strength", 88)
     # player.add_attribute_points("vitality", 213)
     # player.add_attribute_points("dexterity", 181)
-    player.equip_item(sorc_equipment)
-    # player.equip_item("Boneflesh")
-    # player.equip_item("Bul Katho's Wedding Band")
-    # player.equip_item("Carrion Wind")
-    # player.equip_item("Dracul's Grasp")
-    # player.equip_item("Gorerider")
-    # player.equip_item("Highlord's Wrath")
-    # player.equip_item("Swordback Hold")
-    # player.equip_item("The Gnasher")
-    # player.equip_item("Vampiregaze")
-    # player.equip_item("Verdugo's Hearty Cord")
+
+
 
     unique_name = None
     name = None
@@ -110,9 +97,7 @@ if __name__ == "__main__":
         if v != None:
             print(f"Equipped {v['index']} in {k}")
 
-    # print(player.slots["feet"])
+    for k, v in player.stats.items():
+        print(f"{k}:{v}")
 
 
-    # for i in item:
-    #     for key in item[i]:
-    #         print(f"{key}: {item[i][key]}")
